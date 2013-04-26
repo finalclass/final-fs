@@ -6,6 +6,23 @@ var fs = require('fs'),
     path = require('path'),
     nfs = require('node-fs');
 
+
+exports.mkdirSync = nfs.mkdirSync;
+
+exports.mkdir = function (dirPath, mode, recursion) {
+    var defer = when.defer();
+
+    nfs.mkdir(dirPath, mode, recursion, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
+
 exports.rmdirRecursiveSync = function(dirPath) {
     var files;
 
@@ -107,18 +124,7 @@ exports.readdir = function (path) {
 };
 
 exports.createDirIfNotExists = function (dirName) {
-    var deferred = when.defer();
-
-    //1ff(hex) = 0777(oct)
-    nfs.mkdir(dirName, 0x1ff, true, function (err) {
-        if (err) {
-            deferred.reject(err);
-        } else {
-            deferred.resolve();
-        }
-    });
-
-    return deferred.promise;
+    return exports.mkdir(dirName, 0x1ff, true);
 };
 
 exports.rename = function (from, to) {
@@ -145,4 +151,44 @@ exports.writeJSON = function (filePath, obj) {
         }
     });
     return def.promise;
-}
+};
+
+exports.readJSON = function (filePath) {
+    var def = when.defer();
+
+    fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
+        if (err) {
+            def.reject(err);
+        } else {
+            def.resolve(JSON.parse(data));
+        }
+    });
+
+    return def.promise;
+};
+
+exports.dirInfo = function (directoryPath) {
+    return exports.readdir(directoryPath).then(function (files) {
+        return when.map(files, function (file) {
+            var filePath = path.resolve(directoryPath, file);
+
+            return exports.stat(filePath).then(function (stat) {
+                stat.filePath = filePath;
+                stat.fileName = file;
+                return stat;
+            });
+        });
+    });
+};
+
+exports.dirFiles = function (directoryPath) {
+    return exports.dirInfo(directoryPath).then(function (files) {
+        return files
+            .filter(function (file) {
+                return file.isFile();
+            })
+            .map(function (file) {
+                return file.fileName;
+            });
+    });
+};

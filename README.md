@@ -26,10 +26,10 @@ It uses [when](https://github.com/cujojs/when) library for async calls.
 ## unlink
 
     var ffs = require('final-fs');
-    
+
     ffs.unlink(path).then(function () {
         //file is unlinked now
     }).otherwise(function (err) {
-        //something wen wrong
+        //something went wrong
     });;
 
