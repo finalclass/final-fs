@@ -12,8 +12,6 @@ describe('ffs', function () {
     var dir = __dirname + '/var';
 
     beforeEach(function () {
-        ffs.rmdirRecursiveSync(dir);
-
         fs.mkdirSync(dir);
         fs.mkdirSync(dir + '/test1');
         fs.mkdirSync(dir + '/test2');
@@ -24,7 +22,7 @@ describe('ffs', function () {
     });
 
     afterEach(function () {
-
+        ffs.rmdirRecursiveSync(dir);
     });
 
     it('readdir', function () {
