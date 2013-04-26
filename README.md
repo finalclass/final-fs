@@ -5,6 +5,8 @@ It uses [when](https://github.com/cujojs/when) library for async calls.
 
 ## rmdirRecursive
 
+    var ffs = require('final-fs');
+
     ffs.rmdirRecursive(dir).then(function () {
         //content and directory 'dir' is removed now
     }).otherwise(function (err) {
@@ -12,6 +14,8 @@ It uses [when](https://github.com/cujojs/when) library for async calls.
     });
 
 ## readdir
+
+    var ffs = require('final-fs');
 
     ffs.readdir(dir).then(function (files) {
         // do something with the files
@@ -21,6 +25,8 @@ It uses [when](https://github.com/cujojs/when) library for async calls.
 
 ## unlink
 
+    var ffs = require('final-fs');
+    
     ffs.unlink(path).then(function () {
         //file is unlinked now
     }).otherwise(function (err) {
