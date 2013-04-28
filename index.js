@@ -351,8 +351,6 @@ ffs.createWriteStream = fs.createWriteStream;
 // node-fs module
 // -----------------------------------------
 
-ffs.mkdirSync = nfs.mkdirSync;
-
 ffs.mkdirRecursive = function (dirPath, mode) {
     var defer = when.defer();
 
@@ -365,6 +363,10 @@ ffs.mkdirRecursive = function (dirPath, mode) {
     });
 
     return defer.promise;
+};
+
+ffs.mkdirRecursiveSync = function (dirPath, mode) {
+    return nfs.mkdirSync(dirPath, mode, true);
 };
 
 // -----------------------------------------

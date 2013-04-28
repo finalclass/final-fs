@@ -12,8 +12,8 @@
   },
   "keywords": [
     "fs",
-    "file",
-    "system",
+    "filesystem",
+    "files",
     "promise",
     "when",
     "recursive"
