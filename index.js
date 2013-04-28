@@ -8,6 +8,31 @@ var fs = require('fs'),
     nodefn = require("when/node/function"),
     ffs = exports;
 
+/**
+ * Creates a promise-returning function from a Node.js-style function
+ *
+ * @param func
+ * @returns {Function}
+ */
+ffs.promisify = function (func) {
+    return function () {
+        var defer = when.defer();
+
+        Array.prototype.push.call(arguments, function (err) {
+            if (err) {
+                defer.reject(err);
+            } else {
+                defer.resolve(arguments[1]);
+            }
+        });
+
+        func.apply(undefined, arguments);
+
+        return defer.promise;
+    };
+};
+
+
 // -----------------------------------------
 // fs module
 // -----------------------------------------
