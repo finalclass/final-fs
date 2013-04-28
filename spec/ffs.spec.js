@@ -130,4 +130,96 @@ describe('ffs', function () {
         });
     });
 
+
+    it('stat', function () {
+        var stat;
+
+        ffs.stat(__dirname + '/var').then(function (result) {
+            stat = result;
+        });
+
+        waitsFor(function () {
+            return stat !== undefined;
+        }, 'stat', 100);
+
+        runs(function () {
+            expect(stat.isDirectory()).toBeTruthy();
+        });
+    });
+
+    it('rmdir', function () {
+        var done = false;
+
+        fs.mkdirSync(__dirname + '/var2');
+
+        ffs.rmdir(__dirname + '/var2').then(function () {
+            done = true;
+        });
+
+        waitsFor(function () {
+            return done;
+        }, 'rmdir', 100);
+
+        runs(function () {
+            expect(fs.existsSync(__dirname + '/var2')).not.toBeTruthy();
+        });
+    });
+
+    it('unlink', function () {
+        var done = false,
+            filePath = __dirname + '/var/file.tmp';
+
+        fs.writeFileSync(filePath, 'aaa');
+
+        ffs.unlink(filePath).then(function () {
+            done = true;
+        });
+
+        waitsFor(function () {
+            return done;
+        }, 'unlink', 100);
+
+        runs(function () {
+            expect(fs.existsSync(filePath)).not.toBeTruthy();
+        });
+    });
+
+    it('readdir', function () {
+        var content;
+
+        ffs.readdir(__dirname + '/var').then(function (result) {
+            content = result;
+        });
+
+        waitsFor(function () {
+            return content !== undefined;
+        }, 'readdir', 100);
+
+        runs(function () {
+            expect(content.indexOf('test1')).not.toBe(-1);
+            expect(content.indexOf('test2')).not.toBe(-1);
+        });
+    });
+
+    it('readJSON', function () {
+        var obj = {
+                foo: 'bar'
+            },
+            resultObject;
+
+        ffs.writeFileSync(__dirname + '/var/foo.json', JSON.stringify(obj), {encoding: 'utf-8'});
+
+        ffs.readJSON(__dirname + '/var/foo.json').then(function (result) {
+            resultObject = result;
+        });
+
+        waitsFor(function () {
+            return resultObject !== undefined;
+        }, 'readJSON', 100);
+
+        runs(function () {
+            expect(resultObject.foo).toBe(obj.foo);
+        });
+    });
+
 });
