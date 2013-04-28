@@ -1,6 +1,6 @@
 {
     "name": "final-fs",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Promised wrapper for node fs module with usefull additional set of functions.",
     "main": "index.js",
     "scripts": {
