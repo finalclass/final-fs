@@ -8,31 +8,6 @@ var fs = require('fs'),
     nodefn = require("when/node/function"),
     ffs = exports;
 
-/**
- * Creates a promise-returning function from a Node.js-style function
- *
- * @param func
- * @returns {Function}
- */
-ffs.promisify = function (func) {
-    return function () {
-        var defer = when.defer();
-
-        Array.prototype.push.call(arguments, function (err) {
-            if (err) {
-                defer.reject(err);
-            } else {
-                defer.resolve(arguments[1]);
-            }
-        });
-
-        func.apply(undefined, arguments);
-
-        return defer.promise;
-    };
-};
-
-
 // -----------------------------------------
 // fs module
 // -----------------------------------------
@@ -355,7 +330,15 @@ ffs.watch = fs.watch;
 /**
  * @type {function (string) : Promise}
  */
-ffs.exists = nodefn.lift(fs.exists);
+ffs.exists = function (path) {
+    var defer = when.defer();
+
+    fs.exists(path, function (exists) {
+        defer.resolve(exists);
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (string) : boolean}
@@ -378,6 +361,8 @@ ffs.createWriteStream = fs.createWriteStream;
 
 ffs.mkdirRecursive = function (dirPath, mode) {
     var defer = when.defer();
+
+    mode = mode || 0x1ff; //0777
 
     nfs.mkdir(dirPath, mode, true, function (err) {
         if (err) {
@@ -513,3 +498,14 @@ ffs.dirFiles = function (directoryPath) {
             });
     });
 };
+
+ffs.fileNameFilterStripRegExp = /[^\w\s-]/g;
+ffs.fileNameFilterHyphenateRegExp = /[-\s]+/g;
+
+ffs.fileNameFilter = function slugify(text) {
+    text = text.replace(ffs.fileNameFilterStripRegExp, '').trim();
+    text = text.replace(ffs.fileNameFilterHyphenateRegExp, '-');
+    return text;
+};
+
+
