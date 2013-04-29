@@ -502,8 +502,14 @@ ffs.dirFiles = function (directoryPath) {
 ffs.fileNameFilterStripRegExp = /[^\w\s-]/g;
 ffs.fileNameFilterHyphenateRegExp = /[-\s]+/g;
 
+/**
+ * Returns provided `text` as a file name valid string
+ *
+ * @param {string} text
+ * @returns {string}
+ */
 ffs.fileNameFilter = function slugify(text) {
-    text = text.replace(ffs.fileNameFilterStripRegExp, '').trim();
+    text = text.replace(ffs.fileNameFilterStripRegExp, '').trim().toLowerCase();
     text = text.replace(ffs.fileNameFilterHyphenateRegExp, '-');
     return text;
 };
