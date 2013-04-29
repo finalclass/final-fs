@@ -1,5 +1,7 @@
 # Final-FS
 
+**MIT License** (see LICENSE.txt)
+
 Final-FS is an utility library for file system operations.
 It wrapps nodejs "fs" module and provides it's functions in promise pattern.
 Also it has few additional useful set of functions.
