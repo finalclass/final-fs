@@ -3,7 +3,7 @@
 
 var fs = require('fs'),
     when = require('when'),
-    path = require('path'),
+    resolve = require('path').resolve,
     nfs = require('node-fs'),
     nodefn = require("when/node/function"),
     ffs = exports;
@@ -13,39 +13,131 @@ var fs = require('fs'),
 // -----------------------------------------
 
 /**
- * @type {function (string, string) : Promise}
+ * @param {string|Array} oldPath
+ * @param {string|Array} newPath
+ * @returns {Promise}
  */
-ffs.rename = nodefn.lift(fs.rename);
+ffs.rename = function (oldPath, newPath) {
+    var defer = when.defer();
+
+    if (oldPath instanceof Array) {
+        oldPath = resolve.apply(undefined, oldPath);
+    }
+    if (newPath instanceof Array) {
+        newPath = resolve.apply(undefined, newPath);
+    }
+
+    fs.rename(oldPath, newPath, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string) : void}
+ * @param {string|Array} oldPath
+ * @param {string|Array} newPath
+ * @returns {undefined}
  */
-ffs.renameSync = fs.renameSync;
+ffs.renameSync = function (oldPath, newPath) {
+    if (oldPath instanceof Array) {
+        oldPath = resolve.apply(undefined, oldPath);
+    }
+    if (newPath instanceof Array) {
+        newPath = resolve.apply(undefined, newPath);
+    }
+
+    return fs.renameSync(oldPath, newPath);
+};
 
 /**
- * @type {function (number, number) : Promise}
+ * @param {number} fd file descriptor
+ * @param {number} len
+ * @returns {Promise}
  */
-ffs.ftruncate = nodefn.lift(fs.ftruncate);
+ffs.ftruncate = function (fd, len) {
+    var defer = when.defer();
+
+    fs.ftruncate(fd, len, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
+
 
 /**
- * @tyep {function (number, number) : void }
+ * @tyep {function (number, number) : undefined }
  */
 ffs.ftruncateSync = fs.ftruncateSync;
 
 /**
- * @type {function (string, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} len
+ * @returns {Promise}
  */
-ffs.truncate = nodefn.lift(fs.truncate);
+ffs.truncate = function (path, len) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.truncate(path, len, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, number) : void}
+ * @param {string|Array} path
+ * @param {number} len
+ * @returns {undefined}
  */
-ffs.truncateSync = fs.truncateSync;
+ffs.truncateSync = function (path, len) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.truncateSync(path, len);
+};
 
 /**
- * @type {function (string, number, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} uid
+ * @param {number} gid
+ * @returns {Promise}
  */
-ffs.chown = nodefn.lift(fs.chown);
+ffs.chown = function (path, uid, gid) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.chown(path, uid, gid, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (string, number, number) : void }
@@ -53,39 +145,137 @@ ffs.chown = nodefn.lift(fs.chown);
 ffs.chownSync = fs.chownSync;
 
 /**
- * @type {function (number, number, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} uid
+ * @param {number} gid
+ * @returns {undefined}
  */
-ffs.fchown = nodefn.lift(fs.fchown);
+ffs.chownSync = function (path, uid, gid) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.chownSync(path, uid, gid);
+};
+
+/**
+ * @param {number} fd file descriptor
+ * @param {number} uid
+ * @param {number} gid
+ * @returns {Promise}
+ */
+ffs.fchown = function (fd, uid, gid) {
+    var defer = when.defer();
+
+    fs.fchown(fd, uid, gid, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number, number, number) : void}
  */
 ffs.fchownSync = fs.fchownSync;
 
-/**
- * @type {function (string, number, number) : Promise}
- */
-ffs.lchown = nodefn.lift(fs.lchown);
 
 /**
- * @type {function (string, number, number) : void}
+ * @param {string|Array} path
+ * @param {number} uid
+ * @param {number} gid
+ * @returns {Promise}
  */
-ffs.lchownSync = fs.lchownSync;
+ffs.lchown = function (path, uid, gid) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.lchown(path, uid, gid, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} uid
+ * @param {number} gid
+ * @returns {undefined}
  */
-ffs.chmod = nodefn.lift(fs.chmod);
+ffs.lchownSync = function (path, uid, gid) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.lchownSync(path, uid, gid);
+};
 
 /**
- * @type {function (string, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} mode
+ * @returns {Promise}
  */
-ffs.chmodSync = fs.chmodSync;
+ffs.chmod = function (path, mode) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.chmod(path, mode, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (number, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} mode
+ * @returns {undefined}
  */
-ffs.fchmod = nodefn.lift(fs.fchmod);
+ffs.chmodSync = function (path, mode) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.chmodSync(path, mode);
+};
+
+/**
+ * @param {number} fd file descriptor
+ * @param {number} mode
+ * @returns {Promise}
+ */
+ffs.fchmod = function (fd, mode) {
+    var defer = when.defer();
+
+    fs.fchmod(fd, mode, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number, number) : void}
@@ -93,159 +283,543 @@ ffs.fchmod = nodefn.lift(fs.fchmod);
 ffs.fchmodSync = fs.fchmodSync;
 
 /**
- * @type {function (string, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} mode
+ * @returns {Promise}
  */
-ffs.lchmod = nodefn.lift(fs.lchmod);
+ffs.lchmod = function (path, mode) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.lchmod(path, mode, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, number) : void}
+ * @param {string|Array} path
+ * @param {number} mode
+ * @returns {undefined}
  */
-ffs.lchmodSync = fs.lchmodSync;
+ffs.lchmodSync = function (path, mode) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.lchmodSync(path, mode);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise}
  */
-ffs.stat = nodefn.lift(fs.stat);
+ffs.stat = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.stat(path, function (err, status) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(status);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise} resolved with fs.Stats object
  */
-ffs.lstat = nodefn.lift(fs.lstat);
+ffs.lstat = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.lstat(path, function (err, stats) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(stats);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {number} fd file descriptor
+ * @returns {Promise} resolved with fs.Stats object
  */
-ffs.fstat = nodefn.lift(fs.fstat);
+ffs.fstat = function (fd) {
+    var defer = when.defer();
+
+    fs.fstat(fd, function (err, stats) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(stats);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : fs.Stats}
+ * @param {string|Array} path
+ * @returns {fs.Stats}
  */
-ffs.statSync = fs.statSync;
+ffs.statSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.statSync(path);
+};
 
 /**
- * @type {function (string) : fs.Stats}
+ * @param {string|Array} path
+ * @returns {fs.Stats}
  */
-ffs.lstatSync = fs.lstatSync;
+ffs.lstatSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
 
+    return fs.lstatSync(path);
+};
 /**
  * @type {function (string) : fs.Stats}
  */
 ffs.fstatSync = fs.fstatSync;
 
 /**
- * @type {function (string, string) : Promise}
+ * @param {string|Array} srcpath
+ * @param {string|Array} dstpath
+ * @returns {Promise}
  */
-ffs.link = nodefn.lift(fs.link);
+ffs.link = function (srcpath, dstpath) {
+    var defer = when.defer();
+
+    if (srcpath instanceof Array) {
+        srcpath = resolve.apply(undefined, srcpath);
+    }
+    if (dstpath instanceof Array) {
+        dstpath = resolve.apply(undefined, dstpath);
+    }
+
+    fs.link(srcpath, dstpath, function (err, stats) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(stats);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string) : void}
+ * @param {string|Array} srcpath
+ * @param {string|Array} dstpath
+ * @returns {undefined}
  */
-ffs.linkSync = fs.linkSync;
+ffs.linkSync = function (srcpath, dstpath) {
+    if (srcpath instanceof Array) {
+        srcpath = resolve.apply(undefined, srcpath);
+    }
+    if (dstpath instanceof Array) {
+        dstpath = resolve.apply(undefined, dstpath);
+    }
+
+    return fs.linkSync(srcpath, dstpath);
+};
 
 /**
- * @type {function (string, string, ?'dir'|'file'|'junction'='file') : Promise}
+ * @param {string|Array} srcpath
+ * @param {string|Array} dstpath
+ * @param {string} [type='file'] 'dir', 'file', or 'junction'
+ * @returns {Promise}
  */
-ffs.symlink = nodefn.lift(fs.symlink);
+ffs.symlink = function (srcpath, dstpath, type) {
+    var defer = when.defer();
+
+    if (srcpath instanceof Array) {
+        srcpath = resolve.apply(undefined, srcpath);
+    }
+    if (dstpath instanceof Array) {
+        dstpath = resolve.apply(undefined, dstpath);
+    }
+
+    fs.symlink(srcpath, dstpath, type, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string, ?'dir'|'file'|'junction'='file') : void}
+ * @param {string|Array} srcpath
+ * @param {string|Array} dstpath
+ * @param {string} [type='file'] 'dir', 'file', or 'junction'
+ * @returns {Promise}
  */
-ffs.symlinkSync = fs.symlinkSync;
+ffs.symlinkSync = function (srcpath, dstpath, type) {
+    if (srcpath instanceof Array) {
+        srcpath = resolve.apply(undefined, srcpath);
+    }
+    if (dstpath instanceof Array) {
+        dstpath = resolve.apply(undefined, dstpath);
+    }
+
+    return fs.symlinkSync(srcpath, dstpath, type);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise}
  */
-ffs.readlink = nodefn.lift(fs.readlink);
+ffs.readlink = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.readlink(path, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : string}
+ * @param {string|Array} path
+ * @returns {string}
  */
-ffs.readlinkSync = fs.readlinkSync;
+ffs.readlinkSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.readlinkSync(path);
+};
 
 /**
- * @type {function (string, ?object=) : Promise}
+ * @param {string|Array} path
+ * @param {Object} [cache] is an object literal of mapped paths that can be used to force a specific path resolution or avoid additional fs.stat calls for known real paths. (node docs)
+ * @returns {Promise}
  */
-ffs.realpath = nodefn.lift(fs.realpath);
+ffs.realpath = function (path, cache) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.realpath(path, cache, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, ?object=) : string}
+ * @param {string|Array} path
+ * @param {Object} [cache] cache is an object literal of mapped paths that can be used to force a specific path resolution or avoid additional fs.stat calls for known real paths. (node docs)
+ * @returns {string} the resolved path
  */
-ffs.realpathSync = fs.realpathSync;
+ffs.realpathSync = function (path, cache) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.realpathSync(path, cache);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise}
  */
-ffs.unlink = nodefn.lift(fs.unlink);
+ffs.unlink = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.unlink(path, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : void}
+ * @param {string|Array} path
+ * @returns {undefined}
  */
-ffs.unlinkSync = fs.unlinkSync;
+ffs.unlinkSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.unlinkSync(path);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise}
  */
-ffs.rmdir = nodefn.lift(fs.rmdir);
+ffs.rmdir = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.rmdir(path, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : void}
+ * @param {string|Array} path
+ * @returns {undefined}
  */
-ffs.rmdirSync = fs.rmdirSync;
+ffs.rmdirSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.rmdirSync(path);
+};
 
 /**
- * @type {function (string, ?number=0777) : Promise}
+ * @param {string|Array} path
+ * @param {number} [mode=0777]
+ * @returns {Promise}
  */
-ffs.mkdir = nodefn.lift(fs.mkdir);
+ffs.mkdir = function (path, mode) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.mkdir(path, mode, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, ?number=0777) : void}
+ * @param {string|Array} path
+ * @param {number} [mode=0777]
+ * @returns {undefined}
  */
-ffs.mkdirSync = fs.mkdirSync;
+ffs.mkdirSync = function (path, mode) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.mkdirSync(path, mode);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise} that is resolved with array of file names excluding "." and ".."
  */
-ffs.readdir = nodefn.lift(fs.readdir);
+ffs.readdir = function (path) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.readdir(path, function (err, files) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(files);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string) : string[]}
+ * @param {string|Array} path
+ * @returns {string[]}
  */
-ffs.readdirSync = fs.readdirSync;
+ffs.readdirSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.readdirSync(path);
+};
 
 /**
- * @type {function (number) : Promise}
+ * @param {number} fd file descriptor
+ * @returns {Promise}
  */
-ffs.close = nodefn.lift(fs.close);
+ffs.close = function (fd) {
+    var defer = when.defer();
+
+    fs.close(fd, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (number) : void}
+ * @type {function (number) : undefined}
  */
 ffs.closeSync = fs.closeSync;
 
 /**
- * @type {function (string, string, ?number=0666) : Promise}
+ * @param {string|Array} path
+ * @param {string} flags
+ * @param {number} [mode=0666]
+ * @returns {Promise}
  */
-ffs.open = nodefn.lift(fs.open);
+ffs.open = function (path, flags, mode) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.open(path, flags, mode, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string, ?number=0666) : void}
+ * @param {string|Array} path
+ * @param {string} flags
+ * @param {number} [mode=0666]
+ * @returns {undefined}
  */
-ffs.openSync = fs.openSync;
+ffs.openSync = function (path, flags, mode) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.openSync(path, flags, mode);
+};
 
 /**
- * @type {function (string, number, number) : Promise}
+ * @param {string|Array} path
+ * @param {number} atime
+ * @param {number} mtime
+ * @returns {Promise}
  */
-ffs.utimes = nodefn.lift(fs.utimes);
+ffs.utimes = function (path, atime, mtime) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.utimes(path, atime, mtime, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, number, number) : void}
+ * @param {string|Array} path
+ * @param {number} atime
+ * @param {number} mtime
+ * @returns {undefined}
  */
-ffs.utimesSync = fs.utimesSync;
+ffs.utimesSync = function (path, atime, mtime) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.utimesSync(path, atime, mtime);
+};
 
 /**
- * @type {function (number, number, number) : Promise}
+ * @param {number} fd file descriptor
+ * @param {number} atime
+ * @param {number} mtime
+ * @returns {Promise}
  */
-ffs.futimes = nodefn.lift(fs.futimes);
+ffs.futimes = function (fd, atime, mtime) {
+    var defer = when.defer();
+
+    fs.futimes(fd, atime, mtime, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number, number, number) : void}
@@ -253,9 +827,22 @@ ffs.futimes = nodefn.lift(fs.futimes);
 ffs.futimesSync = fs.futimesSync;
 
 /**
- * @type {function (number) : Promise}
+ * @param {number} fd file descriptor
+ * @returns {Promise}
  */
-ffs.fsync = nodefn.lift(fs.fsync);
+ffs.fsync = function (fd) {
+    var defer = when.defer();
+
+    fs.fsync(fd, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number) : void}
@@ -263,9 +850,26 @@ ffs.fsync = nodefn.lift(fs.fsync);
 ffs.fsyncSync = fs.fsyncSync;
 
 /**
- * @type {function (number, Buffer, number, number, nbumber) : Promise}
+ * @param {number} fd file descriptor
+ * @param {Buffer} buffer
+ * @param {number} offset
+ * @param {number} length
+ * @param {number} position
+ * @returns {Promise}
  */
-ffs.write = nodefn.lift(fs.write);
+ffs.write = function (fd, buffer, offset, length, position) {
+    var defer = when.defer();
+
+    fs.write(fd, buffer, offset, length, position, function (err, written, buffer) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve({written: written, buffer: buffer});
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number, Buffer, number, number, nbumber) : number}
@@ -273,9 +877,26 @@ ffs.write = nodefn.lift(fs.write);
 ffs.writeSync = fs.writeSync;
 
 /**
- * @type {function (number, Buffer, number, number, number) : Promise}
+ * @param {number} fd file descriptor
+ * @param {number} buffer
+ * @param {number} offset
+ * @param {number} length
+ * @param {number} position
+ * @returns {Promise} resolved with object: {bytesRead, buffer}
  */
-ffs.read = nodefn.lift(fs.read);
+ffs.read = function (fd, buffer, offset, length, position) {
+    var defer = when.defer();
+
+    fs.read(fd, buffer, offset, length, position, function (err, bytesRead, buffer) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve({bytesRead: bytesRead, buffer: buffer});
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
  * @type {function (number, Buffer, number, number, number) : number}
@@ -283,55 +904,187 @@ ffs.read = nodefn.lift(fs.read);
 ffs.readSync = fs.readSync;
 
 /**
- * @type {function (string, ?{?encoding:string=null, ?flag:string=r}=) : Promise}
+ * @param {string|Array} path
+ * @param {object} [options={}]
+ * @param {string} [options.encoding=null]
+ * @param {string} [options.flag='r']
+ * @returns {Promise} resolved with read data
  */
-ffs.readFile = nodefn.lift(fs.readFile);
+ffs.readFile = function (path, options) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.readFile(path, function (err, data) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve(data);
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, ?{?encoding:string, ?flag:string}=) : Buffer|string}
+ * @param {string|Array} path
+ * @param {object} [options={}]
+ * @param {string} [options.encoding=null]
+ * @param {string} [options.flag='r']
+ * @returns {string|Buffer}
  */
-ffs.readFileSync = fs.readFileSync;
+ffs.readFileSync = function (path, options) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.readFileSync(path, options);
+};
 
 /**
- * @type {function (string, string|Buffer, ?{?encoding:string, ?mode:number, ?flag:string}=) : Promise}
+ * @param {string|Array} path
+ * @param {string|Buffer} data
+ * @param {Object} [options]
+ * @param {string|null} [options.encoding='utf-8']
+ * @param {number} [options.mode=0666]
+ * @param {string} [options.flag='w']
+ * @returns {Promise}
  */
-ffs.writeFile = nodefn.lift(fs.writeFile);
+ffs.writeFile = function (path, data, options) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.writeFile(path, data, options, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string|Buffer, ?{?encoding:string, ?mode:number, ?flag:string}=) : void}
+ * @param {string|Array} path
+ * @param {string|Buffer} data
+ * @param {Object} [options]
+ * @param {string|null} [options.encoding='utf-8']
+ * @param {number} [options.mode=0666]
+ * @param {string} [options.flag='w']
+ * @returns {undefined}
  */
-ffs.writeFileSync = fs.writeFileSync;
+ffs.writeFileSync = function (path, data, options) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.writeFileSync(path, data, options);
+};
 
 /**
- * @type {function (string, string|Buffer, ?{?encoding:string, ?mode:number, ?flag:string}=) : Promise}
+ * @param {string|Array} path
+ * @param {string|Buffer} data
+ * @param {Object} [options]
+ * @param {string|null} [options.encoding='utf-8']
+ * @param {number} [options.mode=0666]
+ * @param {string} [options.flag='a']
+ * @returns {Promise}
  */
-ffs.appendFile = nodefn.lift(fs.appendFile);
+ffs.appendFile = function (path, data, options) {
+    var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    fs.appendFile(path, data, options, function (err) {
+        if (err) {
+            defer.reject(err);
+        } else {
+            defer.resolve();
+        }
+    });
+
+    return defer.promise;
+};
 
 /**
- * @type {function (string, string|Buffer, ?{?encoding:string, ?mode:number, ?flag:string}=) : void}
+ * @param {string|Array} path
+ * @param {string|Buffer} data
+ * @param {Object} [options]
+ * @param {string|null} [options.encoding='utf-8']
+ * @param {number} [options.mode=0666]
+ * @param {string} [options.flag='a']
+ * @returns {undefined}
  */
-ffs.appendFileSync = fs.appendFileSync;
+ffs.appendFileSync = function (path, data, options) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.appendFileSync(path, data, options);
+};
 
 /**
- * @type {function (string, ?{persistent:boolean, interval:number}=, ?function(fs.Stats, fs.Stats)=) : void}
+ * @param {string|Array} path
+ * @param {Object} [options]
+ * @param {boolean} [options.persistent=true]
+ * @param {number} [options.interval=5007]
+ * @param {function(fs.Stats, fs.Stats)} listener
+ * @returns {undefined}
  */
-ffs.watchFile = fs.watchFile;
+ffs.watchFile = function (path, options, listener) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.watchFile(path, options, listener);
+};
 
 /**
- * @type {function (string, function(fs.Stats, fs.Stats)) : void}
+ * @param {string|Array} path
+ * @param {function(fs.Stats, fs.Stats)} listener
+ * @returns {undefined}
  */
-ffs.unwatchFile = fs.unwatchFile;
+ffs.unwatchFile = function (path, listener) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.unwatchFile(path, listener);
+};
 
 /**
- * @type {function (string, ?{persistent:boolean, interval:number}=, ?function (string, string)) : fs.FSWatcher}
+ * @param {string|Array} path
+ * @param {Object} [options]
+ * @param {boolean} [options.persistent=true]
+ * @param {function(fs.Stats, fs.Stats)} listener
+ * @returns {undefined}
  */
-ffs.watch = fs.watch;
+ffs.watch = function (path, options, listener) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.watch(path, options, listener);
+};
 
 /**
- * @type {function (string) : Promise}
+ * @param {string|Array} path
+ * @returns {Promise} resolved with boolean
  */
 ffs.exists = function (path) {
     var defer = when.defer();
+
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
 
     fs.exists(path, function (exists) {
         defer.resolve(exists);
@@ -341,26 +1094,66 @@ ffs.exists = function (path) {
 };
 
 /**
- * @type {function (string) : boolean}
+ * @param {string|Array} path
+ * @returns {boolean}
  */
-ffs.existsSync = fs.existsSync;
+ffs.existsSync = function (path) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.existsSync(path);
+};
 
 /**
- * @type {function (string, ?{flags:'r', encoding: null, fd: null, mode: 0666, bufferSize: 66020, autoClose: true}) : ReadStream}
+ * @param {string|Array} path
+ * @param {Object} [options]
+ * @param {string} [options.flags='r']
+ * @param {string|null} [options.encoding=null]
+ * @param {number|null} [options.fd=null]
+ * @param {number} [options.bufferSize=66020]
+ * @param {boolean} [options.autoClose=true]
+ * @returns {ReadStream}
  */
-ffs.createReadStream = fs.createReadStream;
+ffs.createReadStream = function (path, options) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.createReadStream(path, options);
+};
 
 /**
- * @type {function (string, ?{flags: 'w', encoding: null, mode: 0666}=) : WriteStream}
+ * @param {string|Array} path
+ * @param {Object} [options]
+ * @param {string} [options.flags='r']
+ * @param {string|null} [options.encoding=null]
+ * @param {number} [options.mode=0666]
+ * @returns {WriteStream}
  */
-ffs.createWriteStream = fs.createWriteStream;
+ffs.createWriteStream = function (path, options) {
+    if (path instanceof Array) {
+        path = resolve.apply(undefined, path);
+    }
+
+    return fs.createWriteStream(path, options);
+};
 
 // -----------------------------------------
 // node-fs module
 // -----------------------------------------
 
+/**
+ * @param {string|Array} dirPath
+ * @param {number} mode
+ * @returns {Promise}
+ */
 ffs.mkdirRecursive = function (dirPath, mode) {
     var defer = when.defer();
+
+    if (dirPath instanceof Array) {
+        dirPath = resolve.apply(undefined, dirPath);
+    }
 
     mode = mode || 0x1ff; //0777
 
@@ -375,7 +1168,16 @@ ffs.mkdirRecursive = function (dirPath, mode) {
     return defer.promise;
 };
 
+/**
+ * @param {string|Array} dirPath
+ * @param {number} mode
+ * @returns {undefined}
+ */
 ffs.mkdirRecursiveSync = function (dirPath, mode) {
+    if (dirPath instanceof Array) {
+        dirPath = resolve.apply(undefined, dirPath);
+    }
+
     return nfs.mkdirSync(dirPath, mode, true);
 };
 
@@ -386,10 +1188,14 @@ ffs.mkdirRecursiveSync = function (dirPath, mode) {
 /**
  * Recusrise remove all directory contents
  *
- * @param {string} dirPath
+ * @param {string|Array} dirPath
  */
 ffs.rmdirRecursiveSync = function(dirPath) {
     var files;
+
+    if (dirPath instanceof Array) {
+        dirPath = resolve.apply(undefined, dirPath);
+    }
 
     try {
         files = fs.readdirSync(dirPath);
@@ -413,14 +1219,18 @@ ffs.rmdirRecursiveSync = function(dirPath) {
 /**
  * Removes directory with its contents. Async style.
  *
- * @param {string} dirPath
+ * @param {string|Array} dirPath
  * @returns {Promise}
  */
 ffs.rmdirRecursive = function (dirPath) {
+    if (dirPath instanceof Array) {
+        dirPath = resolve.apply(undefined, dirPath);
+    }
+
     return ffs.readdir(dirPath).then(function (files) {
         return when.map(files,
             function removeOrProceed(file) {
-                var filePath = path.resolve(dirPath, file);
+                var filePath = resolve(dirPath, file);
 
                 return ffs.stat(filePath).then(function (stat) {
                     if (stat.isFile()) {
@@ -441,21 +1251,29 @@ ffs.rmdirRecursive = function (dirPath) {
 /**
  * Convert obj into json string and write it to the file in the filePath
  *
- * @param {string} filePath
+ * @param {string|Array} filePath
  * @param {Object} obj
  * @returns {Promise}
  */
 ffs.writeJSON = function (filePath, obj) {
+    if (filePath instanceof Array) {
+        filePath = resolve.apply(undefined, filePath);
+    }
+
     return ffs.writeFile(filePath, JSON.stringify(obj, null, '    '), {encoding: 'utf-8'});
 };
 
 /**
  * Read file content and turn it into js object
  *
- * @param {string} filePath
+ * @param {string|Array} filePath
  * @returns {Promise}
  */
 ffs.readJSON = function (filePath) {
+    if (filePath instanceof Array) {
+        filePath = resolve.apply(undefined, filePath);
+    }
+
     return ffs.readFile(filePath, {encoding: 'utf-8'}).then(function (result) {
         return JSON.parse(result);
     });
@@ -464,13 +1282,17 @@ ffs.readJSON = function (filePath) {
 /**
  * Returns an array of fs.Stat objects with additional filePath and fileName properties
  *
- * @param directoryPath
+ * @param {string|Array} directoryPath
  * @returns {fs.Stat[]}
  */
 ffs.dirInfo = function (directoryPath) {
+    if (directoryPath instanceof Array) {
+        directoryPath = resolve.apply(undefined, directoryPath);
+    }
+
     return ffs.readdir(directoryPath).then(function (files) {
         return when.map(files, function (file) {
-            var filePath = path.resolve(directoryPath, file);
+            var filePath = resolve(directoryPath, file);
 
             return ffs.stat(filePath).then(function (stat) {
                 stat.filePath = filePath;
@@ -484,10 +1306,14 @@ ffs.dirInfo = function (directoryPath) {
 /**
  * Returns all the files from the directory.
  *
- * @param directoryPath
+ * @param {string|Array} directoryPath
  * @returns {Promise}
  */
 ffs.dirFiles = function (directoryPath) {
+    if (directoryPath instanceof Array) {
+        directoryPath = resolve.apply(undefined, directoryPath);
+    }
+
     return ffs.dirInfo(directoryPath).then(function (files) {
         return files
             .filter(function (file) {

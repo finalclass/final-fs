@@ -10,7 +10,7 @@ Every aynchrouns function in final-fs module uses [when](https://github.com/cujo
 For example, checking file existance can be done with this code:
 
 ```js
-var ffs = require('final-fs');
+var ffs = requtheire('final-fs');
 
 ffs.exists('somefile.txt').then(function (exists) {
     if (exists) {
@@ -24,6 +24,12 @@ ffs.exists('somefile.txt').then(function (exists) {
 ## Installation
 
     npm install final-fs
+
+## Paths
+
+All paths can be specified using array notation. If an array is given as an argument the path.resolved is called.
+
+For example: `ffs.exists(path.resolve(__dirname, 'var', 'test'))` is same as `ffs.exists([__dirname, 'var', 'test'])`.
 
 ## Chaining
 
