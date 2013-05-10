@@ -5,7 +5,6 @@ var fs = require('fs'),
     when = require('when'),
     resolve = require('path').resolve,
     nfs = require('node-fs'),
-    nodefn = require("when/node/function"),
     ffs = exports;
 
 // -----------------------------------------
@@ -1264,6 +1263,19 @@ ffs.writeJSON = function (filePath, obj) {
 };
 
 /**
+ * @param {string|Array} filePath
+ * @param {*} obj
+ * @returns {undefined}
+ */
+ffs.writeJSONSync = function (filePath, obj) {
+    if (filePath instanceof Array) {
+        filePath = resolve.apply(undefined, filePath);
+    }
+
+    return ffs.writeFileSync(filePath, JSON.stringify(obj, null, '    '), {encoding: 'utf-8'});
+};
+
+/**
  * Read file content and turn it into js object
  *
  * @param {string|Array} filePath
@@ -1277,6 +1289,18 @@ ffs.readJSON = function (filePath) {
     return ffs.readFile(filePath, {encoding: 'utf-8'}).then(function (result) {
         return JSON.parse(result);
     });
+};
+
+/**
+ * @param {string|Array} filePath
+ * @returns {*}
+ */
+ffs.readJSONSync = function (filePath) {
+    if (filePath instanceof Array) {
+        filePath = resolve.apply(undefined, filePath);
+    }
+
+    return JSON.parse(ffs.readFileSync(filePath, {encoding: 'utf-8'}));
 };
 
 /**
