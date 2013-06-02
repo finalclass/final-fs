@@ -1411,9 +1411,17 @@ function filePartFiler(text) {
  */
 ffs.fileNameFilter = function slugify(text) {
     var extension = path.extname(text),
-        baseName = path.basename(text, extension);
+        baseName = path.basename(text, extension),
+        filteredName;
 
-    return filePartFiler(baseName) + '.' + filePartFiler(extension);
+    filteredName = filePartFiler(baseName);
+    extension = filePartFiler(extension);
+
+    if (extension) {
+        filteredName += '.' + extension;
+    }
+
+    return filteredName;
 };
 
 
