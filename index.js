@@ -1185,11 +1185,53 @@ ffs.mkdirRecursiveSync = function (dirPath, mode) {
 // -----------------------------------------
 
 /**
+ * @param {string|Array} fromPath
+ * @param {string|Array} toPath
+ * @returns {Promise}
+ */
+ffs.copy = function (fromPath, toPath) {
+    var writeStream, readStream, defer;
+
+    defer = when.defer();
+
+    try {
+        if (fromPath instanceof Array) {
+            fromPath = resolve.apply(undefined, fromPath);
+        }
+
+        if (toPath instanceof Array) {
+            toPath = resolve.apply(undefined, toPath);
+        }
+
+        readStream = ffs.createReadStream(fromPath);
+        writeStream = ffs.createWriteStream(toPath);
+
+        readStream.on('error', function(err) {
+            defer.reject(err);
+        });
+
+        writeStream.on('error', function (err) {
+            defer.reject(err);
+        });
+
+        writeStream.on('close', function () {
+            defer.resolve();
+        });
+
+        readStream.pipe(writeStream);
+    } catch (e) {
+        defer.reject(e);
+    }
+
+    return defer.promise;
+};
+
+/**
  * Recusrise remove all directory contents
  *
  * @param {string|Array} dirPath
  */
-ffs.rmdirRecursiveSync = function(dirPath) {
+ffs.rmdirRecursiveSync = function (dirPath) {
     var files;
 
     if (dirPath instanceof Array) {
@@ -1199,7 +1241,7 @@ ffs.rmdirRecursiveSync = function(dirPath) {
     try {
         files = fs.readdirSync(dirPath);
     }
-    catch(e) {
+    catch (e) {
         return;
     }
     if (files.length > 0) {

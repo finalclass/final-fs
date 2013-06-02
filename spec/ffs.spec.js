@@ -222,4 +222,25 @@ describe('ffs', function () {
         });
     });
 
+    it('copy', function () {
+        var dir = __dirname + '/var',
+            done = false;
+
+        ffs.writeFileSync(dir + '/file.txt', 'test', {encoding: 'utf-8'});
+
+        ffs.copy(dir + '/file.txt', dir + '/copy.txt')
+            .then(function () {
+                done = true;
+            });
+
+        waitsFor(function () {
+            return done;
+        });
+
+        runs(function () {
+            expect(ffs.readFileSync(dir + '/copy.txt', {encodign: 'utf-8'}).toString()).toBe('test');
+        });
+
+    });
+
 });
