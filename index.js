@@ -3,7 +3,8 @@
 
 var fs = require('fs'),
     when = require('when'),
-    resolve = require('path').resolve,
+    path = require('path'),
+    resolve = path.resolve,
     nfs = require('node-fs'),
     ffs = exports;
 
@@ -1394,6 +1395,14 @@ ffs.dirFiles = function (directoryPath) {
 ffs.fileNameFilterStripRegExp = /[^\w\s-]/g;
 ffs.fileNameFilterHyphenateRegExp = /[-\s]+/g;
 
+function filePartFiler(text) {
+    return text
+        .replace(ffs.fileNameFilterStripRegExp, '')
+        .trim()
+        .toLowerCase()
+        .replace(ffs.fileNameFilterHyphenateRegExp, '-');
+}
+
 /**
  * Returns provided `text` as a file name valid string
  *
@@ -1401,9 +1410,10 @@ ffs.fileNameFilterHyphenateRegExp = /[-\s]+/g;
  * @returns {string}
  */
 ffs.fileNameFilter = function slugify(text) {
-    text = text.replace(ffs.fileNameFilterStripRegExp, '').trim().toLowerCase();
-    text = text.replace(ffs.fileNameFilterHyphenateRegExp, '-');
-    return text;
+    var extension = path.extname(text),
+        baseName = path.basename(text, extension);
+
+    return filePartFiler(baseName) + '.' + filePartFiler(extension);
 };
 
 
