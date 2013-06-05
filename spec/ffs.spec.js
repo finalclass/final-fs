@@ -243,4 +243,45 @@ describe('ffs', function () {
 
     });
 
+    it('readdirRecursive with directories', function () {
+        var items;
+
+        ffs.readdirRecursive(dir)
+            .then(function (result) {
+                items = result;
+            })
+            .otherwise(function (err) {
+                console.log(err.stack);
+            });
+
+        waitsFor(function () {
+            return items !== undefined;
+        }, 100);
+
+        runs(function () {
+            console.log(items);
+            expect(items.length).toBe(7);
+        })
+    });
+
+    it('readdirRecursive only files', function () {
+        var items;
+
+        ffs.readdirRecursive(dir, true)
+            .then(function (result) {
+                items = result;
+            })
+            .otherwise(function (err) {
+                console.log(err.stack);
+            });
+
+        waitsFor(function () {
+            return items !== undefined;
+        }, 100);
+
+        runs(function () {
+            expect(items.length).toBe(4);
+        })
+    });
+
 });

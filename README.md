@@ -241,6 +241,25 @@ ffs.mkdirRecursiveSync(dirPath)
     });
 ```
 
+### readdireRecursive(directoryPath:string|Array, ?onlyFiles:boolean=false, ?rootPath='.')
+
+Read dire recursively.
+You can set onlyFiles flag to true and no directory will be included as a Promise result
+
+```js
+var ffs = require('final-fs'),
+    path = require('path'),
+    dirPath = path.resolve(__dirname, 'var', 'tmp', 'tmp2');
+
+ffs.readdirRecursive(dirPath, true, 'my/initial/path)
+    .then(function (files) {
+        // files is an array of file names starts from my/initial/path
+    })
+    .otherwise(function (err) {
+        // something went wrong
+    });
+```
+
 ## Nodejs fs module functions
 
 These functions work exatcly the same as in nodejs fs module However asynchrouns functions doesn't take any callbacks.

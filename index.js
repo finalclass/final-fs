@@ -1392,6 +1392,44 @@ ffs.dirFiles = function (directoryPath) {
     });
 };
 
+/**
+ * Recursively reads directory
+ *
+ * @param {string|Array} directoryPath
+ * @param {boolean} onlyFiles include directories in output?
+ * @param {string} rootPath prefix for every output file
+ * @returns {Promise}
+ */
+ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
+    var merged;
+
+    if (directoryPath instanceof Array) {
+        directoryPath = resolve.apply(undefined, directoryPath);
+    }
+
+    rootPath = rootPath || '.';
+    merged = onlyFiles ? [] : [rootPath];
+
+    return ffs.dirInfo(directoryPath)
+        .then(function (items) {
+            return when.map(items, function (item) {
+                var newRootPath = rootPath + '/' + item.fileName;
+
+                if (item.isDirectory()) {
+                    return ffs.readdirRecursive([directoryPath, item.fileName], onlyFiles, newRootPath);
+                }
+
+                return newRootPath;
+            })
+        })
+        .then(function (result) {
+            merged = merged.concat.apply(merged, result);
+            return merged;
+        })
+
+};
+
+
 ffs.fileNameFilterStripRegExp = /[^\w\s-]/g;
 ffs.fileNameFilterHyphenateRegExp = /[-\s]+/g;
 
