@@ -1396,8 +1396,8 @@ ffs.dirFiles = function (directoryPath) {
  * Recursively reads directory
  *
  * @param {string|Array} directoryPath
- * @param {boolean} onlyFiles include directories in output?
- * @param {string} rootPath prefix for every output file
+ * @param {boolean} [onlyFiles=false] include directories in output?
+ * @param {string} [rootPath='.'] prefix for every output file
  * @returns {Promise}
  */
 ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
