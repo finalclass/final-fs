@@ -251,7 +251,7 @@ var ffs = require('final-fs'),
     path = require('path'),
     dirPath = path.resolve(__dirname, 'var', 'tmp', 'tmp2');
 
-ffs.readdirRecursive(dirPath, true, 'my/initial/path)
+ffs.readdirRecursive(dirPath, true, 'my/initial/path')
     .then(function (files) {
         // files is an array of file names starts from my/initial/path
     })
