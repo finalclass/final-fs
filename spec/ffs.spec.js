@@ -259,7 +259,6 @@ describe('ffs', function () {
         }, 100);
 
         runs(function () {
-            console.log(items);
             expect(items.length).toBe(7);
         })
     });
