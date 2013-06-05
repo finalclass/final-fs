@@ -253,7 +253,7 @@ var ffs = require('final-fs'),
 
 ffs.readdirRecursive(dirPath, true, 'my/initial/path')
     .then(function (files) {
-        // files is an array of file names starts from my/initial/path
+        // in files variable you got all the files
     })
     .otherwise(function (err) {
         // something went wrong
