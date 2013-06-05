@@ -1413,7 +1413,7 @@ ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
     return ffs.dirInfo(directoryPath)
         .then(function (items) {
             return when.map(items, function (item) {
-                var newRootPath = rootPath + '/' + item.fileName;
+                var newRootPath = rootPath ? rootPath + '/' + item.fileName : item.fileName;
 
                 if (item.isDirectory()) {
                     return ffs.readdirRecursive([directoryPath, item.fileName], onlyFiles, newRootPath);
