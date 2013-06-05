@@ -1397,7 +1397,7 @@ ffs.dirFiles = function (directoryPath) {
  *
  * @param {string|Array} directoryPath
  * @param {boolean} [onlyFiles=false] include directories in output?
- * @param {string} [rootPath='.'] prefix for every output file
+ * @param {string} [rootPath=''] prefix for every output file
  * @returns {Promise}
  */
 ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
@@ -1407,7 +1407,7 @@ ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
         directoryPath = resolve.apply(undefined, directoryPath);
     }
 
-    rootPath = rootPath || '.';
+    rootPath = rootPath || '';
     merged = onlyFiles ? [] : [rootPath];
 
     return ffs.dirInfo(directoryPath)

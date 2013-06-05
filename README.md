@@ -241,7 +241,7 @@ ffs.mkdirRecursiveSync(dirPath)
     });
 ```
 
-### readdireRecursive(directoryPath:string|Array, ?onlyFiles:boolean=false, ?rootPath='.')
+### readdireRecursive(directoryPath:string|Array, ?onlyFiles:boolean=false, ?rootPath='')
 
 Read dire recursively.
 You can set onlyFiles flag to true and no directory will be included as a Promise result
