@@ -3,6 +3,7 @@
 
 var fs = require('fs'),
     when = require('when'),
+    sequence = require('when/sequence'),
     path = require('path'),
     resolve = path.resolve,
     nfs = require('node-fs'),
@@ -1207,7 +1208,7 @@ ffs.copy = function (fromPath, toPath) {
         readStream = ffs.createReadStream(fromPath);
         writeStream = ffs.createWriteStream(toPath);
 
-        readStream.on('error', function(err) {
+        readStream.on('error', function (err) {
             defer.reject(err);
         });
 
@@ -1358,15 +1359,19 @@ ffs.dirInfo = function (directoryPath) {
     }
 
     return ffs.readdir(directoryPath).then(function (files) {
-        return when.map(files, function (file) {
+        var functions = [];
+        files.forEach(function (file) {
             var filePath = resolve(directoryPath, file);
-
-            return ffs.stat(filePath).then(function (stat) {
-                stat.filePath = filePath;
-                stat.fileName = file;
-                return stat;
+            functions.push(function () {
+                return ffs.stat(filePath).then(function (stat) {
+                    stat.filePath = filePath;
+                    stat.fileName = file;
+                    return stat;
+                });
             });
         });
+
+        return sequence(functions);
     });
 };
 
@@ -1412,15 +1417,18 @@ ffs.readdirRecursive = function (directoryPath, onlyFiles, rootPath) {
 
     return ffs.dirInfo(directoryPath)
         .then(function (items) {
-            return when.map(items, function (item) {
+            var functions = [];
+            items.forEach(function (item) {
                 var newRootPath = rootPath ? rootPath + '/' + item.fileName : item.fileName;
+                functions.push(function () {
+                    if (item.isDirectory()) {
+                        return ffs.readdirRecursive([directoryPath, item.fileName], onlyFiles, newRootPath);
+                    }
+                    return newRootPath;
+                });
+            });
 
-                if (item.isDirectory()) {
-                    return ffs.readdirRecursive([directoryPath, item.fileName], onlyFiles, newRootPath);
-                }
-
-                return newRootPath;
-            })
+            return sequence(functions);
         })
         .then(function (result) {
             merged = merged.concat.apply(merged, result);
