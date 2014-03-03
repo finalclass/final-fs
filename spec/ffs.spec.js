@@ -293,4 +293,17 @@ describe('ffs', function () {
         expect(files.length).toBe(4);
     });
 
+    it('statAllSync', function () {
+        var files;
+        var stats;
+        expect(function () {
+            files = ffs.readdirRecursiveSync(dir, true);
+            stats = ffs.statAllSync(files, dir);
+        }).not.toThrow();
+        expect(stats.length).toBe(4);
+        expect(stats[0] instanceof fs.Stats).toBeTruthy();
+        expect(stats[0].filePath).toBe(dir + '/test1/ttt.txt');
+        expect(stats[0].fileName).toBe('test1/ttt.txt');
+    });
+
 });
