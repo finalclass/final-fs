@@ -160,6 +160,11 @@ ffs.dirInfo(dirPath)
     });
 ```
 
+### statAllSync(files:string[], rootPath?:string) : fs.Stats[]
+
+returns a stat of every file provided in the list of files variable. 
+If you provide rootPath then this rootPath will be merged with every file path in files var.
+
 ### dirFiles(dirPath:string) : Promise
 
 Returns all the files from the directory.
