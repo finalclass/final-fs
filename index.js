@@ -1375,6 +1375,18 @@ ffs.dirInfo = function (directoryPath) {
     });
 };
 
+ffs.statAllSync = function (files, rootPath) {
+    rootPath = rootPath || '';
+
+    return files.map(function (file) {
+        var fPath = path.join(rootPath, file);
+        var s = ffs.statSync(fPath);
+        s.filePath = fPath;
+        s.fileName = file;
+        return s;
+    });
+};
+
 /**
  * Returns all the files from the directory.
  *
@@ -1469,6 +1481,8 @@ ffs.readdirRecursiveSync = function (directoryPath, onlyFiles, rootPath) {
 
     return files;
 };
+
+
 
 
 ffs.fileNameFilterStripRegExp = /[^\w\s-]/g;
