@@ -244,6 +244,7 @@ ffs.mkdirRecursiveSync(dirPath)
 ### readdirRecursive(directoryPath:string|Array, ?onlyFiles:boolean=false, ?rootPath='')
 
 Read dir recursively.
+
 You can set onlyFiles flag to true and no directory will be included as a Promise result
 
 ```js
