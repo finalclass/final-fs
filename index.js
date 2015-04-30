@@ -918,7 +918,7 @@ ffs.readFile = function (path, options) {
         path = resolve.apply(undefined, path);
     }
 
-    fs.readFile(path, function (err, data) {
+    fs.readFile(path, options, function (err, data) {
         if (err) {
             defer.reject(err);
         } else {
